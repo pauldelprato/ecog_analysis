@@ -59,6 +59,8 @@ for ievep = 1:length(params.event_plot)
             plottf = ft_singleplotTFR(cfg{ichan}, freq_data{event_plot_indx} );
             
             title(sprintf('%s / %d',freq_data{1}.label{ichan},ichan));
+            
+            %First panel, provide label axes
             if k ==1
                 xlabel('Time (sec)');
                 ylabel('Frequency (hz)');

@@ -20,7 +20,7 @@ holdon = ishold;
 if (nargin<4)
     disp('ERROR: not enough input arguments!');
     return;
-end % if
+end
 
 z1 = y + err;
 z2 = y - err;
