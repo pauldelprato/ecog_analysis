@@ -58,7 +58,11 @@ for ievep = 1:length(params.event_plot)
             %To do - potentially organize aggregate plottf into an output variable
             plottf = ft_singleplotTFR(cfg{ichan}, freq_data{event_plot_indx} );
             
-            title(sprintf('%s / %d',freq_data{1}.label{ichan},ichan));
+            %Prepare better label
+            title_chan = freq_data{1}.label{ichan};
+            title_chan = strrep(title_chan,'_','-');
+            
+            title(sprintf('%s / %d',title_chan,ichan));
             
             %First panel, provide label axes
             if k ==1

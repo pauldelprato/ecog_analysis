@@ -1,4 +1,4 @@
-function cluster_statistics = clusterTest(event_data,params,save_to_file)
+function cluster_stats = clusterTest(event_data,params,save_to_file)
 
 if nargin<3
     save_to_file = 0;

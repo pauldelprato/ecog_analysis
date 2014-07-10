@@ -342,5 +342,5 @@ params.event_plot = 1;
 TF_plot(TF_data,params)
 
 %%
-stats = clusterTest(HGP_event_data,params)
+stats = clusterTest(HGP_event_data,params,1);
 

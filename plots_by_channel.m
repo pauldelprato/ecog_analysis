@@ -1,4 +1,4 @@
-function plots_by_channel(avg_data,params,visible)
+function plots_by_channel(evoked_data,params,visible)
 
 %% single channel plots
 %create x axis line
@@ -16,13 +16,13 @@ if nargin<3
 end
 
 % %identifies if lfp or hgp data (working on a solution below)
-% if isfield(avg_data{1}.cfg.previous{1},'hilbert')==1 && strcmp(avg_data{1}.cfg.previous{1}.hilbert,'abs') || strcmpi(avg_data{1}.cfg.hilbert,'abs')
+% if isfield(evoked_data{1}.cfg.previous{1},'hilbert')==1 && strcmp(evoked_data{1}.cfg.previous{1}.hilbert,'abs') || strcmpi(evoked_data{1}.cfg.hilbert,'abs')
 %     proc = 1; proc_name = 'HGP';
 % else proc = 0; proc_name = 'LFP';
 % end
 
 %identifies if lfp or hgp data
-if isfield(avg_data{1}.cfg,'hilbert') && strcmpi(avg_data{1}.cfg.hilbert,'abs')
+if isfield(evoked_data{1}.cfg.previous{1},'hilbert') && strcmpi(evoked_data{1}.cfg.previous{1}.hilbert,'abs')
     proc = 1; proc_name = 'HGP';
 else proc = 0; proc_name = 'LFP';
 end
@@ -35,14 +35,14 @@ if ~exist(plotdir,'dir')==1, mkdir(plotdir), end
 %Determine which channels to plot
 if isfield(params,'plotchan')==1
     if strcmp(params.plotchan,'all')
-        channels = 1:length(avg_data{1}.label);
+        channels = 1:length(evoked_data{1}.label);
     else
         disp('Looking for specific channels to plot...');
-        channels = find(ismember(avg_data{1}.label,params.plotchan)==1);
+        channels = find(ismember(evoked_data{1}.label,params.plotchan)==1);
     end
         
     %Otherwise just plot them all
-else channels = 1:length(avg_data{1}.label);
+else channels = 1:length(evoked_data{1}.label);
 end
 
 line_colors = [[0 1 0];[0 0 1];[1 0 0]];
@@ -52,7 +52,7 @@ clear yevent event_name legend_names
 for i = 1:length(params.plotevt)
     yevent(i) = find(params.events==params.plotevt(i));
     event_name{i} = params.event_names{yevent(i)};
-    legend_names{i} = [event_name{i} ' N=' num2str(length(avg_data{yevent(i)}.trialinfo))];
+    legend_names{i} = [event_name{i} ' N=' num2str(length(evoked_data{yevent(i)}.trialinfo))];
 end
 
 % leg_names = cat(1,event1_name,event2_name); %defines legend
@@ -82,12 +82,12 @@ for iplot = 1:plot_length
         subplot(h(k));
         ichan = k+(iplot-1)*25;
         
-        chan = avg_data{1}.label{ichan};
+        chan = evoked_data{1}.label{ichan};
         chan = strrep(chan,'_','-');
         
         for ieve = 1:length(yevent)
-            ymax(ieve) = max(abs(avg_data{yevent(ieve)}.avg(ichan,20:end-20)))*1.2; % because of edge effect
-            yft(ieve,:) = avg_data{yevent(ieve)}.avg(ichan,:);
+            ymax(ieve) = max(abs(evoked_data{yevent(ieve)}.avg(ichan,20:end-20)))*1.2; % because of edge effect
+            yft(ieve,:) = evoked_data{yevent(ieve)}.avg(ichan,:);
         end
         ymax_val = max(ymax); %largest y-axis value
         %Dynamically generates the appropriate axes ranges for the plots
@@ -97,12 +97,12 @@ for iplot = 1:plot_length
 %             ymax_val = 40;
 %         end
         
-        xft = avg_data{1}.timeavg;
+        xft = evoked_data{1}.timeavg;
         
         %plot responses
         for ieve = 1:length(yevent)
             confplot_3andC(xft,yft(ieve,:),...
-                sqrt(avg_data{yevent(ieve)}.var(ichan,:)) ./ sqrt(length(avg_data{yevent(ieve)}.trialinfo)), ...
+                sqrt(evoked_data{yevent(ieve)}.var(ichan,:)) ./ sqrt(length(evoked_data{yevent(ieve)}.trialinfo)), ...
                 line_colors(ieve,:)); hold on;
         end
         hold on, plot([0 0],[-ymax_val ymax_val],'color',[0.6 0.6 0.6]);
@@ -130,7 +130,7 @@ for iplot = 1:plot_length
     
     %TO DO - put channel information into fig name
     export_fig(sprintf('%s/%s_%s_%s_CLIN%d_%druns_multiplot%d.png',...
-        plotdir,params.subject,params.experiment,proc_name,params.clinsys,length(avg_data{1}.cfg.previous),iplot),'-a1','-nocrop');
+        plotdir,params.subject,params.experiment,proc_name,params.clinsys,length(evoked_data{1}.cfg.previous),iplot),'-a1','-nocrop');
 end
 
 

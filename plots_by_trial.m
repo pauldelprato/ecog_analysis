@@ -27,11 +27,11 @@ else proc = 0; proc_name = 'LFP';
 end
 
 %Directory to place the plots
-plotdir = sprintf('%s/%s_plots',params.analysis_dir,proc_name);
+plotdir = sprintf('%s/%s_plots/%s',params.analysis_dir,proc_name,sensor_name);
 if ~exist(plotdir,'dir')==1, mkdir(plotdir), end
 
-%Determine which channels to plot
-channels = sensor_name;
+%Determine which channel to plot
+channel = strmatch(sensor_name,avg_data{1}.label);
 
 line_colors = [[0 1 0];[0 0 1];[1 0 0]];
 
@@ -47,7 +47,7 @@ end
 
 %The number of channels (plots)
 %25 trials per plotnum_trials
-num_trials = length(params.my_trl{1});
+num_trials = length(avg_data{1}.trial);
 plot_length = floor(num_trials/25);
 if num_trials > plot_length*25
     plot_length = plot_length+1;
@@ -70,14 +70,10 @@ for iplot = 1:plot_length
         subplot(h(k));
         itrl = k+(iplot-1)*25;
         
-        
-        trl = avg_data{1}.trial{itrl};
-        trl = strrep(trl,'_','-');
-        
         %Figure out what this does
         for ieve = 1:length(yevent)
-            ymax(ieve) = max(abs(avg_data{yevent(ieve)}.avg(itrl,20:end-20)))*1.2; % because of edge effect
-            yft(ieve,:) = avg_data{yevent(ieve)}.avg(itrl,:);
+            ymax(ieve) = max(abs(avg_data{yevent(ieve)}.trial{itrl}(channel,20:end-20)))*1.2; % because of edge effect
+            yft(ieve,:) = avg_data{yevent(ieve)}.trial{itrl}(channel,:);
         end
         
         ymax_val = max(ymax); %largest y-axis value
@@ -86,15 +82,15 @@ for iplot = 1:plot_length
         
         %plot responses, using no confidence judgment value (arg 3)
         for ieve = 1:length(yevent)
-            confplot_3andC(xft,yft(itrl,:),0,line_colors(ieve,:)); hold on;
+            confplot_3andC(xft,yft(ieve,:),0,line_colors(ieve,:)); hold on;
         end
-        hold on, plot([0 0],[-ymax_val ymax_val],'color',[0.6 0.6 0.6]);
+        hold on, plot([0 0],[0 ymax_val],'color',[0.6 0.6 0.6]);
         
         axis([params.prestim params.poststim -ymax_val ymax_val]);
         % axis([params.prestim params.poststim -.05 .05]);
         % set background color and line handles
         set(gcf, 'Color', 'w');
-        title(sprintf('%s %s',proc_name,trl),'FontSize',16);
+        title(sprintf('%s / %d',proc_name,itrl),'FontSize',16);
         if k == 1
             xlabel('Time (sec)');
             %TO DO - enter appropriate ylabel ylabel('xxx');

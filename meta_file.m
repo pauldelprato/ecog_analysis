@@ -11,7 +11,12 @@ end
 params.trigchan = {'Pulse DC1-REF' 'Pulse DC2-REF' 'Pulse DC3-REF' 'Pulse DC4-REF' 'Pulse DC5-REF' 'Pulse DC6-REF' 'Pulse DC7-REF' 'Pulse DC8-REF'};
 params.prestim = -.3; % in sec, for plotting
 params.poststim = 1; % in sec, for plotting
-params.runs = length(params.filenames);
+
+if ismac
+    params.main_dir = '/Users/pauldelprato/memory_replay/';
+else
+    params.main_dir = '/home/pdelprato/Results'; % Main directory for saving analysis results
+end
 
 %Determine dataest to analyze
 switch dataset_idx
@@ -28,7 +33,7 @@ switch dataset_idx
         params.clinsys = 1; % Clinical system #1
         params.event_names = {'Sound','Face','Building'};
         params.events = [1 4 5]; % These are the trigger codes in binary (2^n - 1)
-        params.main_dir = '/space/mdeh5/1/halgdev/projects/pdelprato/Results'; % Main directory for saving analysis results
+        %params.main_dir = '/space/mdeh5/1/halgdev/projects/pdelprato/Results'; % Main directory for saving analysis results
         params.threshold = 190000; % For trigger detection
         params.bad_chs = {'GA_23','GA_27','GA_32','GB_63','RAF_07','LMT_01','DH_08'};
         
@@ -44,7 +49,9 @@ switch dataset_idx
         params.clinsys = 2; % Clinical system #2
         params.event_names = {'Sound','Face','Building'};
         params.events = [1 4 5]; % These are the trigger codes in binary (2^n - 1)
-        params.main_dir = '/home/pdelprato/Results'; % Main directory for saving analysis results
+        
+       
+        
         params.threshold = 190000; % For trigger detection
         %params.bad_chs = {'GA_23','GA_27','GA_32','GB_63','RAF_07','LMT_01','DH_08'};
         
@@ -64,3 +71,5 @@ switch dataset_idx
         params.main_dir = '/space/mdeh5/1/halgdev/projects/pdelprato/Results'; % Main directory for saving analysis results
         params.bad_chs = {'GA_23','GA_27','GA_32','GB_63','RAF_07','LMT_01','DH_08'};
 end
+
+params.runs = length(params.filenames);

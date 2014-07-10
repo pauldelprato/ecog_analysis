@@ -131,7 +131,7 @@ head_channels_good = epoch_data.label;
 
 %%Hilbert = high gamma power from 70 to 190 Hz ... (technique other than
 %%hilbert is wavelet... look into this)
-clear cfg HGP_epoch_data HGP_event_data
+clear cfg HGP_epoch_data
 %cfg = cell(1,params.runs);
 for i = 1 : params.runs
 
@@ -342,5 +342,5 @@ params.event_plot = 1;
 TF_plot(TF_data,params)
 
 %%
-stats = clusterTest(HGP_event_data,params)
+stats = clusterTest(HGP_event_data,params);
 
